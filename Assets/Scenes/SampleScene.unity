@@ -406,6 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 963209290b08a8846819139d33a20f34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boot
+  globalConfigs: {fileID: 11400000, guid: f037c270532c63d48b42d131d2150d2b, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
