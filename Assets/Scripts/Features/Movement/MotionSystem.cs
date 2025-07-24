@@ -5,7 +5,7 @@ using Unity.Physics;
 
 namespace Features.Movement
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup)), BurstCompile]
+    [UpdateInGroup(typeof(GameplayGroup)), BurstCompile]
     public partial struct MotionSystem : ISystem
     {
         private const float ComparisonEpsilon = 0.0001f;
