@@ -17,7 +17,7 @@ namespace Features.Input
             
             var entity = EntityManager.CreateSingleton<InputActionsComponent>();
             EntityManager.AddComponentData(entity, _trackedPlayerInput.data);
-            EntityManager.SetComponentEnabled<PlayerInputComponent>(entity, false);
+            //EntityManager.SetComponentEnabled<PlayerInputComponent>(entity, false); // Disable input map
 
             _inputActions.Player.SetCallbacks(this);
         }
