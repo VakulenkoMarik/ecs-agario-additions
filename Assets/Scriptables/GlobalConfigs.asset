@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: GlobalConfigs
   m_EditorClassIdentifier: Assembly-CSharp::Data.GlobalConfigs
   gameplayConfig:
-    data: 0.11
+    massToScaleConversion: 0.1
+    massToZAxisConversion: 0.001
+    baseZAxis: 0

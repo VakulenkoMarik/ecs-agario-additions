@@ -10,12 +10,10 @@ namespace Features.Controller
     [BurstCompile]
     public partial struct PlayerControlSystem : ISystem
     {
-        [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<InputActionsComponent>();
-            state.RequireForUpdate<PlayerControlComponent>();
-            state.RequireForUpdate<DirectionComponent>();
+            state.RequireForUpdate<PlayerInputComponent>();
         }
 
         [BurstCompile]
