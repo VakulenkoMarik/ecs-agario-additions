@@ -1,11 +1,12 @@
 ﻿using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Features.Spawn
 {
-    [UpdateInGroup(typeof(GameplayGroup), OrderLast = true)]
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     [BurstCompile]
     public partial struct SpawnerSystem : ISystem
     {
@@ -22,16 +23,13 @@ namespace Features.Spawn
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
-                .CreateCommandBuffer(state.WorldUnmanaged);
-
+            var ecb = new EntityCommandBuffer(Allocator.Temp);
             
             foreach (var (rwSpawner, entity) in SystemAPI.Query<RefRW<Spawner>>().WithEntityAccess())
             {
                 if (rwSpawner.ValueRO.nextSpawnTime < SystemAPI.Time.ElapsedTime)
                 {
                     var newEntity = ecb.Instantiate(rwSpawner.ValueRO.prefab);
-                    ecb.ParentTo(state.EntityManager, newEntity, entity);
                     
                     float3 spawnerPosition = rwSpawner.ValueRO.spawnAnchorPointOffset;
                     if (rwSpawner.ValueRO.spawnZone.x != 0)
@@ -50,10 +48,14 @@ namespace Features.Spawn
                     }
                     
                     ecb.SetComponent(newEntity, LocalTransform.FromPosition(spawnerPosition));
-
+                    ecb.AddComponent(newEntity, new Parent { Value = entity });
+                    
                     rwSpawner.ValueRW.nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + rwSpawner.ValueRO.spawnRate;
                 }
             }
+            
+            ecb.Playback(state.EntityManager);
+            ecb.Dispose();
         }
     }
 }

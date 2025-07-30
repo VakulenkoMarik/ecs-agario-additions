@@ -1,6 +1,5 @@
 ﻿using Unity.Burst;
 using Unity.Entities;
-using Unity.Transforms;
 
 [BurstCompile]
 public static class EcsExtensions
@@ -16,88 +15,5 @@ public static class EcsExtensions
 
         component = default;
         return false;
-    }
-
-    public static void ParentTo(this EntityManager manager, Entity child, Entity parent)
-    {
-        if (!manager.HasComponent<LocalToWorld>(child))
-        {
-            manager.AddComponent<LocalToWorld>(child);
-        }
-
-        if (manager.HasComponent<Parent>(child))
-        {
-            manager.SetComponentData(child, new Parent { Value = parent });
-        }
-        else
-        {
-            manager.AddComponentData(child, new Parent { Value = parent });   
-        }
-        
-        if (manager.HasComponent<SceneTag>(parent))
-        {
-            var sceneTag = manager.GetSharedComponent<SceneTag>(parent);
-            manager.AddSharedComponent(child, sceneTag);
-        }
-    }
-    
-    public static Entity CreateChildEntity(this EntityManager manager, Entity parent)
-    {
-        var child = manager.CreateEntity(typeof(LocalTransform), typeof(LocalToWorld), typeof(Parent));
-        manager.SetComponentData(child, new Parent { Value = parent });
-        
-        if (manager.HasComponent<SceneTag>(parent))
-        {
-            var sceneTag = manager.GetSharedComponent<SceneTag>(parent);
-            manager.AddSharedComponent(child, sceneTag);
-        }
-
-        return child;
-    }
-    
-    public static void ParentTo(this EntityCommandBuffer ecb, EntityManager manager, Entity child, Entity parent)
-    {
-        if (child == Entity.Null)
-        {
-            if (!manager.HasComponent<LocalToWorld>(child))
-            {
-                ecb.AddComponent<LocalToWorld>(child);
-            }
-
-            if (manager.HasComponent<Parent>(child))
-            {
-                ecb.SetComponent(child, new Parent { Value = parent });
-            }
-            else
-            {
-                ecb.AddComponent(child, new Parent { Value = parent });
-            }
-        }
-        else
-        {
-            ecb.AddComponent<LocalToWorld>(child);
-            ecb.AddComponent(child, new Parent { Value = parent });
-        }
-        
-        if (manager.HasComponent<SceneTag>(parent))
-        {
-            var sceneTag = manager.GetSharedComponent<SceneTag>(parent);
-            ecb.AddSharedComponent(child, sceneTag);
-        }
-    }
-    
-    public static Entity CreateChildEntity(this EntityCommandBuffer ecb, EntityManager manager, Entity parent)
-    {
-        var child = ecb.CreateEntity();
-        ecb.AddComponent<LocalTransform>(child);
-        ecb.AddComponent<LocalToWorld>(child);
-        ecb.AddComponent(child, new Parent { Value = parent });
-        
-        if (manager.HasComponent<SceneTag>(parent))
-        {
-            var sceneTag = manager.GetSharedComponent<SceneTag>(parent);
-            ecb.AddSharedComponent(child, sceneTag);
-        }
-        return child;
     }
 }
