@@ -314,6 +314,7 @@ MonoBehaviour:
     y: 4
     z: 0
   spawnRate: 1
+  maxCount: 100
 --- !u!1 &529422140
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,24 +540,16 @@ PrefabInstance:
       value: Character
       objectReference: {fileID: 0}
     - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.50000006
-      objectReference: {fileID: 0}
-    - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.513
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.51800007
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
       propertyPath: m_LocalRotation.w

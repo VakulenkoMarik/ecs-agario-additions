@@ -11,6 +11,7 @@ namespace Features.Spawn
         public float3 spawnZone;
         public float nextSpawnTime;
         public float spawnRate;
+        public float maxCount;
     }
 
     public class SpawnerAuthoring : MonoBehaviour
@@ -19,6 +20,7 @@ namespace Features.Spawn
         public float3 spawnAnchorPointOffset;
         public float3 spawnZone;
         public float spawnRate;
+        public float maxCount = 100;
     }
 
     public class SpawnerBaker : Baker<SpawnerAuthoring>
@@ -26,6 +28,7 @@ namespace Features.Spawn
         public override void Bake(SpawnerAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
+            GetEntity(authoring.prefab, TransformUsageFlags.Dynamic);
             AddComponent(entity, new Spawner
             {
                 prefab = GetEntity(authoring.prefab, TransformUsageFlags.Dynamic),
@@ -33,6 +36,7 @@ namespace Features.Spawn
                 spawnZone = authoring.spawnZone,
                 nextSpawnTime = 0.0f,
                 spawnRate = authoring.spawnRate,
+                maxCount = authoring.maxCount,
             });
         }
     }
