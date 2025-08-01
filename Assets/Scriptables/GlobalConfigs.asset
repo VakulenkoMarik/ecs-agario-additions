@@ -16,3 +16,5 @@ MonoBehaviour:
     massToScaleConversion: 0.1
     massToZAxisConversion: 0.001
     baseZAxis: 0
+    minMass: 5
+    massToSpeedExpModifier: -0.01

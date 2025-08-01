@@ -313,7 +313,7 @@ MonoBehaviour:
     x: 7.5
     y: 4
     z: 0
-  spawnRate: 1
+  spawnRate: 0.1
   maxCount: 100
 --- !u!1 &529422140
 GameObject:

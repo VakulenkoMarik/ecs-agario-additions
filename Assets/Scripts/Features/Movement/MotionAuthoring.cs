@@ -7,6 +7,7 @@ namespace Features.Movement
     public struct MotionComponent : IComponentData
     {
         public float maxSpeed;
+        public float alteredMaxSpeed;
         public float accelerationTime;
     }
     
@@ -31,6 +32,7 @@ namespace Features.Movement
             AddComponent(entity, new MotionComponent
             {
                 maxSpeed = authoring.maxSpeed,
+                alteredMaxSpeed = authoring.maxSpeed,
                 accelerationTime = authoring.accelerationTime,
             });
             
