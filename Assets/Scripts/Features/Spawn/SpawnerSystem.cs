@@ -83,7 +83,9 @@ namespace Features.Spawn
                     }
                     
                     var newEntity = state.EntityManager.Instantiate(rwSpawner.ValueRO.prefab);
-                    SystemAPI.SetComponent(newEntity, LocalTransform.FromPosition(spawnerPosition));
+                    var localTransform = SystemAPI.GetComponent<LocalTransform>(newEntity);
+                    localTransform.Position = spawnerPosition;
+                    SystemAPI.SetComponent(newEntity, localTransform);
                     rwSpawner.ValueRW.nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + rwSpawner.ValueRO.spawnRate;
                     break;
                 }
