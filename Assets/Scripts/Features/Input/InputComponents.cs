@@ -14,15 +14,15 @@ namespace Features.Input
         
         public float2 moveValue;
         public float2 lookValue;
-        public float attackValue;
+        public float feedValue;
         public float jumpValue;
         
-        public bool IsAttackPressed => attackValue > PressedThreshold;
+        public bool IsFeedPressed => feedValue > PressedThreshold;
         public bool IsJumpPressed => jumpValue > PressedThreshold;
 
         public bool Equals(PlayerInputComponent other)
         {
-            return moveValue.Equals(other.moveValue) && lookValue.Equals(other.lookValue) && attackValue == other.attackValue && jumpValue == other.jumpValue;
+            return moveValue.Equals(other.moveValue) && lookValue.Equals(other.lookValue) && feedValue == other.feedValue && jumpValue == other.jumpValue;
         }
 
         public override bool Equals(object obj)
@@ -32,7 +32,7 @@ namespace Features.Input
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(moveValue, lookValue, attackValue, jumpValue);
+            return HashCode.Combine(moveValue, lookValue, feedValue, jumpValue);
         }
         
         public static bool operator ==(PlayerInputComponent left, PlayerInputComponent right)

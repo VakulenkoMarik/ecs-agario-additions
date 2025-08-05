@@ -83,9 +83,9 @@ namespace Features.Input
             _trackedPlayerInput.isChanged = true;
         }
 
-        void InputActions.IPlayerActions.OnAttack(InputAction.CallbackContext context)
+        void InputActions.IPlayerActions.OnFeed(InputAction.CallbackContext context)
         {
-            _trackedPlayerInput.data.attackValue = context.action.ReadValue<float>();
+            _trackedPlayerInput.data.feedValue = context.action.ReadValue<float>();
             _trackedPlayerInput.isChanged = true;
         }
 

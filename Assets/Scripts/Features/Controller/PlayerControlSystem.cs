@@ -1,4 +1,5 @@
-﻿using Unity.Burst;
+﻿using Features.Feed;
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Features.Input;
@@ -10,10 +11,15 @@ namespace Features.Controller
     [BurstCompile]
     public partial struct PlayerControlSystem : ISystem
     {
+        private ComponentLookup<DirectionComponent> _directionLookup;
+        private ComponentLookup<FeedComponent> _feedLookup;
+
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<InputActionsComponent>();
             state.RequireForUpdate<PlayerInputComponent>();
+            _directionLookup = state.GetComponentLookup<DirectionComponent>();
+            _feedLookup = state.GetComponentLookup<FeedComponent>();
         }
 
         [BurstCompile]
@@ -25,10 +31,24 @@ namespace Features.Controller
                 return;
             }
             
+            _directionLookup.Update(ref state);
+            _feedLookup.Update(ref state);
+            
             float3 direction = new float3(playerInput.moveValue.x, playerInput.moveValue.y, 0);
-            foreach (var (directionRef, _) in SystemAPI.Query<RefRW<DirectionComponent>, RefRO<PlayerControlComponent>>())
+            bool isFeedPressed = playerInput.IsFeedPressed;
+            foreach (var (_, entity) in SystemAPI.Query<RefRO<PlayerControlComponent>>().WithEntityAccess())
             {
-                directionRef.ValueRW.weightedDirection = direction;
+                if (_directionLookup.TryGetComponent(entity, out var rwDirection))
+                {
+                    rwDirection.weightedDirection = direction;
+                    SystemAPI.SetComponent(entity, rwDirection);
+                }
+                
+                if (_feedLookup.TryGetComponent(entity, out var rwFeed))
+                {
+                    rwFeed.tryToFeed = isFeedPressed;
+                    SystemAPI.SetComponent(entity, rwFeed);
+                }
             }
         }
     }
