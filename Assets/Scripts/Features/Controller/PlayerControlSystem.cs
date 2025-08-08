@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Features.Input;
 using Features.Movement;
+using ProjectTools.Ecs;
 
 namespace Features.Controller
 {
