@@ -69,9 +69,8 @@ namespace Features.Consumption
             var entityA = triggerEvent.EntityA;
             var entityB = triggerEvent.EntityB;
         
-            if (eaterLookup.HasComponent(entityA))
+            if (eaterLookup.HasComponent(entityA) && TryEat(entityA, entityB))
             {
-                TryEat(entityA, entityB);
                 return;
             }
         
@@ -93,7 +92,7 @@ namespace Features.Consumption
             
             float eaterRadius = MassScalerSystem.MassToRadius(eaterEatable.mass, gameplayConfig.massToScaleConversion);
             float distance = math.distance(eaterTransform.Position.xy, targetTransform.Position.xy);
-            if (distance > eaterRadius)
+            if (distance > eaterRadius || eaterEatable.mass <= targetEatable.mass)
             {
                 return false;
             }
