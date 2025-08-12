@@ -1,4 +1,5 @@
 using Data;
+using HSM;
 using Unity.Entities;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace Core
         {
             Application.targetFrameRate = 60;
             globalConfigs.Bake(World.DefaultGameObjectInjectionWorld);
+            HsmTools.InitHsm(new GameState());
         }
         
     }

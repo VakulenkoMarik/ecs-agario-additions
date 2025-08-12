@@ -101,7 +101,7 @@ namespace HSM
         
         private void SetSystemsActive(SystemBase system, bool isActive)
         {
-            if (ApplicationState.IsQuitting)
+            if (HsmTools.IsAppQuitting)
             {
                 return;
             }
