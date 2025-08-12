@@ -13,7 +13,7 @@ namespace Features.Movement
     
     public struct DirectionComponent : IComponentData
     {
-        public float3 weightedDirection;
+        public float3 direction;
     }
     
     public class MotionAuthoring : MonoBehaviour
@@ -38,7 +38,7 @@ namespace Features.Movement
             
             AddComponent(entity, new DirectionComponent
             {
-                weightedDirection = float3.zero,
+                direction = float3.zero,
             });
         }
     }

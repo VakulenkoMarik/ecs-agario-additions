@@ -6,12 +6,14 @@ namespace Features.Input
 {
     public struct InputActionsComponent : IComponentData
     {
+        public bool isFocussed;
     }
 
     public struct PlayerInputComponent : IComponentData, IEquatable<PlayerInputComponent>, IEnableableComponent
     {
         private const float PressedThreshold = 0.2f;
         
+        public float2 targetValue;
         public float2 moveValue;
         public float2 lookValue;
         public float feedValue;

@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Features.Input;
 using Features.Movement;
 using ProjectTools.Ecs;
+using Unity.Transforms;
 
 namespace Features.Controller
 {
@@ -14,6 +15,7 @@ namespace Features.Controller
     {
         private ComponentLookup<DirectionComponent> _directionLookup;
         private ComponentLookup<FeedComponent> _feedLookup;
+        private ComponentLookup<LocalTransform> _transformLookup;
 
         public void OnCreate(ref SystemState state)
         {
@@ -21,11 +23,13 @@ namespace Features.Controller
             state.RequireForUpdate<PlayerInputComponent>();
             _directionLookup = state.GetComponentLookup<DirectionComponent>();
             _feedLookup = state.GetComponentLookup<FeedComponent>();
+            _transformLookup = state.GetComponentLookup<LocalTransform>(true);
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            var inputActions = SystemAPI.GetSingleton<InputActionsComponent>();
             var inputEntity = SystemAPI.GetSingletonEntity<InputActionsComponent>();
             if (!state.EntityManager.GetComponentDataIfEnabled(inputEntity, out PlayerInputComponent playerInput))
             {
@@ -34,14 +38,25 @@ namespace Features.Controller
             
             _directionLookup.Update(ref state);
             _feedLookup.Update(ref state);
-            
-            float3 direction = new float3(playerInput.moveValue.x, playerInput.moveValue.y, 0);
+            _transformLookup.Update(ref state);
+
+            float3 targetPosition = new float3 { xy = playerInput.targetValue};
             bool isFeedPressed = playerInput.IsFeedPressed;
             foreach (var (_, entity) in SystemAPI.Query<RefRO<PlayerControlComponent>>().WithEntityAccess())
             {
-                if (_directionLookup.TryGetComponent(entity, out var rwDirection))
+                if (_directionLookup.TryGetComponent(entity, out var rwDirection) && 
+                    _transformLookup.TryGetComponent(entity, out var localTransform))
                 {
-                    rwDirection.weightedDirection = direction;
+                    if (inputActions.isFocussed)
+                    {
+                        targetPosition.z = localTransform.Position.z;
+                        rwDirection.direction = math.normalize(targetPosition - localTransform.Position);
+                    }
+                    else if (math.any(rwDirection.direction != float3.zero))
+                    {
+                        rwDirection.direction = float3.zero;
+                    }
+                    
                     SystemAPI.SetComponent(entity, rwDirection);
                 }
                 

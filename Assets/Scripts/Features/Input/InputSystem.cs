@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,7 @@ namespace Features.Input
     public partial class InputSystem : SystemBase, InputActions.IPlayerActions
     {
         private InputActions _inputActions;
+        private Tracked<InputActionsComponent> _trackedInputActions;
         private Tracked<PlayerInputComponent> _trackedPlayerInput;
 
         protected override void OnCreate()
@@ -15,11 +17,20 @@ namespace Features.Input
             _inputActions = new InputActions();
             _inputActions.Disable();
             
-            var entity = EntityManager.CreateSingleton<InputActionsComponent>();
+            _trackedInputActions.data.isFocussed = Application.isFocused;
+            var entity = EntityManager.CreateSingleton(_trackedInputActions.data);
+            
             EntityManager.AddComponentData(entity, _trackedPlayerInput.data);
+            
             //EntityManager.SetComponentEnabled<PlayerInputComponent>(entity, false); // Disable input map
 
+            
             _inputActions.Player.SetCallbacks(this);
+        }
+        
+        protected override void OnStartRunning()
+        {
+            Application.focusChanged += OnFocusChanged;
         }
 
         protected override void OnUpdate()
@@ -27,6 +38,8 @@ namespace Features.Input
             var entity = SystemAPI.GetSingletonEntity<InputActionsComponent>();
             RefreshInputActions(in entity, _inputActions.Player, ref _trackedPlayerInput);
 
+            
+            
             if (_trackedPlayerInput.PopIsChanged)
             {
                 EntityManager.SetComponentData(entity, _trackedPlayerInput.data);
@@ -35,6 +48,7 @@ namespace Features.Input
 
         protected override void OnStopRunning()
         {
+            Application.focusChanged -= OnFocusChanged;
             _inputActions.Disable();
             var entity = SystemAPI.GetSingletonEntity<InputActionsComponent>();
             _trackedPlayerInput = default;
@@ -69,7 +83,30 @@ namespace Features.Input
                 EntityManager.SetComponentData(entity, trackedData.data);
             }
         }
+        
+        private void OnFocusChanged(bool isFocussed)
+        {
+            _trackedInputActions.data.isFocussed = isFocussed;
+            _trackedInputActions.isChanged = true;
+        }
 
+        public void OnTarget(InputAction.CallbackContext context)
+        {
+            var screenPosition = context.action.ReadValue<Vector2>();
+            
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                _trackedPlayerInput.data.targetValue = float2.zero;
+            }
+            else
+            {
+                var worldPosition = camera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 0));
+                _trackedPlayerInput.data.targetValue = new float2(worldPosition.x, worldPosition.y);
+            }
+            
+            _trackedPlayerInput.isChanged = true;
+        }
 
         void InputActions.IPlayerActions.OnMove(InputAction.CallbackContext context)
         {
