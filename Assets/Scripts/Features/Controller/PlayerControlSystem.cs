@@ -50,7 +50,8 @@ namespace Features.Controller
                     if (inputActions.isFocussed)
                     {
                         targetPosition.z = localTransform.Position.z;
-                        rwDirection.direction = math.normalize(targetPosition - localTransform.Position);
+                        var direction = targetPosition - localTransform.Position;
+                        rwDirection.direction = math.length(direction) > 1f ? math.normalize(direction) : direction;
                     }
                     else if (math.any(rwDirection.direction != float3.zero))
                     {

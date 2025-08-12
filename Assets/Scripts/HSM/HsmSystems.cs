@@ -25,7 +25,7 @@ namespace HSM
         }
     }
     
-    [UpdateInGroup(typeof(PresentationSystemGroup), OrderFirst = true)]
+    [UpdateInGroup(typeof(LateSimulationSystemGroup), OrderLast = true)]
     public partial class HsmLateUpdateSystem : SystemBase
     {
         protected override void OnCreate()
