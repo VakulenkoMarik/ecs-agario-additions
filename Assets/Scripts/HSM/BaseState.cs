@@ -7,8 +7,7 @@ namespace HSM
 {
     public abstract class BaseState
     {
-        protected virtual List<Type> RequiredSystems => new();
-
+        internal abstract BaseState GetSubStateInternal();
         internal abstract void SetSubStateInternal(BaseState subState);
         
         internal abstract void OnEnterInternal(SystemBase system);
@@ -20,41 +19,34 @@ namespace HSM
         internal abstract void TryChangeStateInternal(SystemBase system);
     }
     
-    public abstract class BaseSubState<TParent> : BaseState<BaseSubState<TParent>> where TParent : BaseState
-    {
-        public TParent Parent { get; private set; }
-
-        internal void SetParent(TParent parent)
-        {
-            Parent = parent;
-        }
-        
-        protected void SetState(BaseSubState<TParent> state)
-        {
-            Parent.SetSubStateInternal(state);
-        }
-    }
-    
     public abstract class BaseState<TSelf> : BaseState where TSelf : BaseState
     {
-        public BaseSubState<TSelf> SubState { get; internal set; }
+        public BaseState SubState { get; internal set; }
         private bool _isSubStateChangeRequested = false;
-        private BaseSubState<TSelf> _nextSubState = null;
+        private BaseState _nextSubState = null;
 
+        protected virtual List<Type> RequiredSystems => new();
+        
         public virtual void OnEnter(SystemBase system){}
         public virtual void OnUpdate(SystemBase system){}
         public virtual void OnLateUpdate(SystemBase system){}
         public virtual void OnExit(SystemBase system){}
         
-        protected void SetSubState(BaseSubState<TSelf> subState)
+        internal override BaseState GetSubStateInternal()
+        {
+            return SubState;
+        }
+        
+        internal override void SetSubStateInternal(BaseState subState)
         {
             _isSubStateChangeRequested = true;
             _nextSubState = subState;
         }
         
-        internal override void SetSubStateInternal(BaseState subState)
+        protected void SetSubState(ISubState<TSelf> subState)
         {
-            SetSubState(subState as BaseSubState<TSelf>);
+            _isSubStateChangeRequested = true;
+            _nextSubState = subState as BaseState;
         }
 
         internal override void OnEnterInternal(SystemBase system)
@@ -95,7 +87,7 @@ namespace HSM
                 return;
             }
             
-            SubState.SetParent(this as TSelf);
+            (SubState as ISubState<TSelf>)?.SetParent(this as TSelf);
             SubState.OnEnterInternal(system);
         }
 
