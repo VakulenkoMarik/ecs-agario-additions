@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace Features.Movement
 {
-    public struct MotionComponent : IComponentData
+    public struct Motion : IComponentData
     {
         public float maxSpeed;
         public float alteredMaxSpeed;
         public float accelerationTime;
     }
     
-    public struct DirectionComponent : IComponentData
+    public struct Direction : IComponentData
     {
-        public float3 direction;
+        public float3 vector;
     }
     
     public class MotionAuthoring : MonoBehaviour
@@ -29,16 +29,16 @@ namespace Features.Movement
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
     
-            AddComponent(entity, new MotionComponent
+            AddComponent(entity, new Motion
             {
                 maxSpeed = authoring.maxSpeed,
                 alteredMaxSpeed = authoring.maxSpeed,
                 accelerationTime = authoring.accelerationTime,
             });
             
-            AddComponent(entity, new DirectionComponent
+            AddComponent(entity, new Direction
             {
-                direction = float3.zero,
+                vector = float3.zero,
             });
         }
     }

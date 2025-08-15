@@ -36,4 +36,6 @@ namespace Features.Consumption
             return massToScaleRatio * math.sqrt(mass/math.PI);
         }
     }
+    
+    
 }

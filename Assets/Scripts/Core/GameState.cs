@@ -13,7 +13,7 @@ namespace Core
         protected override List<Type> RequiredSystems => new List<Type>
         {
             typeof(MotionSystem),
-            typeof(PlayerControlSystem),
+            typeof(CharacterControllerSystem),
         };
 
         public override void OnEnter(SystemBase system)

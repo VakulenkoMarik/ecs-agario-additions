@@ -14,9 +14,9 @@ namespace Features.Movement
         public void OnUpdate(ref SystemState state)
         {
             foreach (var (roDirection, roMotion, rwVelocity) in 
-                     SystemAPI.Query<RefRO<DirectionComponent>, RefRO<MotionComponent>, RefRW<PhysicsVelocity>>())
+                     SystemAPI.Query<RefRO<Direction>, RefRO<Motion>, RefRW<PhysicsVelocity>>())
             {
-                float3 target = roDirection.ValueRO.direction * roMotion.ValueRO.alteredMaxSpeed;
+                float3 target = roDirection.ValueRO.vector * roMotion.ValueRO.alteredMaxSpeed;
                 if (math.all(math.abs(rwVelocity.ValueRO.Linear - target) < ComparisonEpsilon) || roMotion.ValueRO.accelerationTime <= 0)
                 {
                     rwVelocity.ValueRW.Linear = target;

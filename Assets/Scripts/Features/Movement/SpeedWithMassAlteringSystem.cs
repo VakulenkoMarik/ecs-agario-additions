@@ -19,7 +19,7 @@ namespace Features.Movement
         {
             var gameplayConfig = SystemAPI.GetSingleton<GameplayConfig>();
             
-            foreach (var (rwMotion, roEatable) in SystemAPI.Query<RefRW<MotionComponent>, RefRO<EatableComponent>>())
+            foreach (var (rwMotion, roEatable) in SystemAPI.Query<RefRW<Motion>, RefRO<EatableComponent>>())
             {
                 if (roEatable.ValueRO.mass <= gameplayConfig.minMass)
                 {

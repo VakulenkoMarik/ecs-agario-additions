@@ -4,15 +4,16 @@ using Unity.Mathematics;
 
 namespace Features.Input
 {
-    public struct InputActionsComponent : IComponentData
+    public struct InputBridge : IComponentData
     {
         public bool isFocussed;
     }
 
-    public struct PlayerInputComponent : IComponentData, IEquatable<PlayerInputComponent>, IEnableableComponent
+    public struct GameCommands : IComponentData, IEquatable<GameCommands>, IEnableableComponent
     {
         private const float PressedThreshold = 0.2f;
         
+        public bool isTargetValid;
         public float2 targetValue;
         public float2 moveValue;
         public float2 lookValue;
@@ -22,14 +23,14 @@ namespace Features.Input
         public bool IsFeedPressed => feedValue > PressedThreshold;
         public bool IsJumpPressed => jumpValue > PressedThreshold;
 
-        public bool Equals(PlayerInputComponent other)
+        public bool Equals(GameCommands other)
         {
             return moveValue.Equals(other.moveValue) && lookValue.Equals(other.lookValue) && feedValue == other.feedValue && jumpValue == other.jumpValue;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is PlayerInputComponent other && Equals(other);
+            return obj is GameCommands other && Equals(other);
         }
 
         public override int GetHashCode()
@@ -37,12 +38,12 @@ namespace Features.Input
             return HashCode.Combine(moveValue, lookValue, feedValue, jumpValue);
         }
         
-        public static bool operator ==(PlayerInputComponent left, PlayerInputComponent right)
+        public static bool operator ==(GameCommands left, GameCommands right)
         {
             return left.Equals(right);
         }
         
-        public static bool operator !=(PlayerInputComponent left, PlayerInputComponent right)
+        public static bool operator !=(GameCommands left, GameCommands right)
         {
             return !left.Equals(right);
         }

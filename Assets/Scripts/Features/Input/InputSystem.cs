@@ -9,16 +9,16 @@ namespace Features.Input
     public partial class InputSystem : SystemBase, InputActions.IPlayerActions
     {
         private InputActions _inputActions;
-        private Tracked<InputActionsComponent> _trackedInputActions;
-        private Tracked<PlayerInputComponent> _trackedPlayerInput;
+        private Tracked<InputBridge> _trackedInputBridge;
+        private Tracked<GameCommands> _trackedPlayerInput;
 
         protected override void OnCreate()
         {
             _inputActions = new InputActions();
             _inputActions.Disable();
             
-            _trackedInputActions.data.isFocussed = Application.isFocused;
-            var entity = EntityManager.CreateSingleton(_trackedInputActions.data);
+            _trackedInputBridge.data.isFocussed = Application.isFocused;
+            var entity = EntityManager.CreateSingleton(_trackedInputBridge.data);
             
             EntityManager.AddComponentData(entity, _trackedPlayerInput.data);
             
@@ -35,7 +35,7 @@ namespace Features.Input
 
         protected override void OnUpdate()
         {
-            var entity = SystemAPI.GetSingletonEntity<InputActionsComponent>();
+            var entity = SystemAPI.GetSingletonEntity<InputBridge>();
             RefreshInputActions(in entity, _inputActions.Player, ref _trackedPlayerInput);
 
             
@@ -50,7 +50,7 @@ namespace Features.Input
         {
             Application.focusChanged -= OnFocusChanged;
             _inputActions.Disable();
-            var entity = SystemAPI.GetSingletonEntity<InputActionsComponent>();
+            var entity = SystemAPI.GetSingletonEntity<InputBridge>();
             _trackedPlayerInput = default;
             EntityManager.SetComponentData(entity, _trackedPlayerInput.data);
         }
@@ -86,8 +86,10 @@ namespace Features.Input
         
         private void OnFocusChanged(bool isFocussed)
         {
-            _trackedInputActions.data.isFocussed = isFocussed;
-            _trackedInputActions.isChanged = true;
+            _trackedPlayerInput.data.isTargetValid = isFocussed;
+            _trackedPlayerInput.isChanged = true;
+            _trackedInputBridge.data.isFocussed = isFocussed;
+            _trackedInputBridge.isChanged = true;
         }
 
         public void OnTarget(InputAction.CallbackContext context)
@@ -98,11 +100,13 @@ namespace Features.Input
             if (camera == null)
             {
                 _trackedPlayerInput.data.targetValue = float2.zero;
+                _trackedPlayerInput.data.isTargetValid = false;
             }
             else
             {
                 var worldPosition = camera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 0));
                 _trackedPlayerInput.data.targetValue = new float2(worldPosition.x, worldPosition.y);
+                _trackedPlayerInput.data.isTargetValid = _trackedInputBridge.data.isFocussed;
             }
             
             _trackedPlayerInput.isChanged = true;
