@@ -117,12 +117,6 @@ namespace Features.Input
             _trackedPlayerInput.data.moveValue = context.action.ReadValue<Vector2>();
             _trackedPlayerInput.isChanged = true;
         }
-            
-        void InputActions.IPlayerActions.OnLook(InputAction.CallbackContext context) 
-        {
-            _trackedPlayerInput.data.lookValue = context.action.ReadValue<Vector2>();
-            _trackedPlayerInput.isChanged = true;
-        }
 
         void InputActions.IPlayerActions.OnFeed(InputAction.CallbackContext context)
         {

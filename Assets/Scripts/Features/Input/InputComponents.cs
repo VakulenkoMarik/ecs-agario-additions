@@ -16,7 +16,6 @@ namespace Features.Input
         public bool isTargetValid;
         public float2 targetValue;
         public float2 moveValue;
-        public float2 lookValue;
         public float feedValue;
         public float jumpValue;
         
@@ -25,7 +24,7 @@ namespace Features.Input
 
         public bool Equals(GameCommands other)
         {
-            return moveValue.Equals(other.moveValue) && lookValue.Equals(other.lookValue) && feedValue == other.feedValue && jumpValue == other.jumpValue;
+            return moveValue.Equals(other.moveValue) && targetValue.Equals(other.targetValue) && feedValue == other.feedValue && jumpValue == other.jumpValue;
         }
 
         public override bool Equals(object obj)
@@ -35,7 +34,7 @@ namespace Features.Input
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(moveValue, lookValue, feedValue, jumpValue);
+            return HashCode.Combine(moveValue, targetValue, feedValue, jumpValue);
         }
         
         public static bool operator ==(GameCommands left, GameCommands right)
