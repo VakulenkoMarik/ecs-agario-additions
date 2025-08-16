@@ -1,8 +1,8 @@
-﻿using Features.Feed;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Entities;
 using Features.Input;
 using Features.Movement;
+using Features.Split;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -35,8 +35,12 @@ namespace Features.Controller
             {
                 gameCommandsLookup = _gameCommandsLookup,
             }.ScheduleParallel(state.Dependency);
+            var splitJob = new CharacterControlSplitJob
+            {
+                gameCommandsLookup = _gameCommandsLookup,
+            }.ScheduleParallel(state.Dependency);
             
-            state.Dependency = JobHandle.CombineDependencies(directionJob, feedJob);
+            state.Dependency = JobHandle.CombineDependencies(directionJob, feedJob, splitJob);
         }
     }
 
@@ -78,7 +82,7 @@ namespace Features.Controller
         public ComponentLookup<GameCommands> gameCommandsLookup;
         
         [BurstCompile]
-        public void Execute(in CharacterInstance instance, in LocalTransform localTransform, ref FeedComponent feed)
+        public void Execute(in CharacterInstance instance, in LocalTransform localTransform, ref Feed.Feed feed)
         {
             if (!gameCommandsLookup.TryGetComponent(instance.parent, out var gameCommands))
             {
@@ -86,6 +90,24 @@ namespace Features.Controller
             }
             
             feed.tryToFeed = gameCommands.IsFeedPressed;
+        }
+    }
+    
+    [BurstCompile]
+    public partial struct CharacterControlSplitJob : IJobEntity
+    {
+        [ReadOnly] 
+        public ComponentLookup<GameCommands> gameCommandsLookup;
+        
+        [BurstCompile]
+        public void Execute(in CharacterInstance instance, in LocalTransform localTransform, ref Splittable splittable)
+        {
+            if (!gameCommandsLookup.TryGetComponent(instance.parent, out var gameCommands))
+            {
+                return;
+            }
+            
+            splittable.tryToSplit = gameCommands.IsJumpPressed;
         }
     }
 }

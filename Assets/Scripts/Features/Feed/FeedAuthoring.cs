@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Features.Feed
 {
-    public struct FeedComponent : IComponentData
+    public struct Feed : IComponentData
     {
         public bool tryToFeed;
         public float cooldown;
@@ -22,7 +22,7 @@ namespace Features.Feed
         public override void Bake(FeedAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(entity, new FeedComponent
+            AddComponent(entity, new Feed
             {
                 cooldown = authoring.cooldown,
                 foodPrefab = GetEntity(authoring.foodPrefab, TransformUsageFlags.Dynamic),

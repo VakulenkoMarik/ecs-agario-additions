@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Features.Consumption
 {
-    public struct AutoScaleWithMassComponent : IComponentData
+    public struct AutoScaleWithMass : IComponentData
     {
         
     }
     
-    public struct EatableComponent : IComponentData
+    public struct Eatable : IComponentData
     {
         public float mass;
     }
@@ -24,14 +24,14 @@ namespace Features.Consumption
         public override void Bake(EatableAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.None);
-            AddComponent(entity, new EatableComponent
+            AddComponent(entity, new Eatable
             {
                 mass = authoring.mass,
             });
             
             if (authoring.isAutoScale)
             {
-                AddComponent(entity, new AutoScaleWithMassComponent());
+                AddComponent(entity, new AutoScaleWithMass());
             }
         }
     }

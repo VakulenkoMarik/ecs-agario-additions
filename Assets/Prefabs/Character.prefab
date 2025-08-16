@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 1776974014520861796}
   - component: {fileID: 4113698152337113442}
   - component: {fileID: 682724012745191863}
+  - component: {fileID: 5520571859369154312}
+  - component: {fileID: 3577676283520380124}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -212,4 +214,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Features.Feed.FeedAuthoring
   foodPrefab: {fileID: 7661046383562058751, guid: 3e47c8d32cf76df44a91238d0becae17, type: 3}
+  cooldown: 0.1
+--- !u!114 &5520571859369154312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3564986274487595235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ea7f3b9d74c45a6b062a052b5698622, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Split.SplittableAuthoring
   cooldown: 0.5
+  instancePrefab: {fileID: 3564986274487595235}
+--- !u!114 &3577676283520380124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3564986274487595235}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65b124d8250a4e5c8297010fcc0e8b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliderAuthoring
+  ownLayer: 0
+  allowedCollisions: 00000000

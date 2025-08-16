@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Features
 {
-    public struct GameFieldComponent : IComponentData
+    public struct GameFieldTag : IComponentData
     {
     }
     
@@ -17,7 +17,7 @@ namespace Features
         public override void Bake(GameFieldAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.None);
-            AddComponent<GameFieldComponent>(entity);
+            AddComponent<GameFieldTag>(entity);
         }
     }
     

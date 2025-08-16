@@ -22,9 +22,9 @@ namespace Features.Consumption
             var gameplayConfig = SystemAPI.GetSingleton<GameplayConfig>();
             
             foreach (var (rwTransform, roEatable) in SystemAPI
-                         .Query<RefRW<LocalTransform>, RefRO<EatableComponent>>()
-                         .WithAll<AutoScaleWithMassComponent>()
-                         .WithChangeFilter<EatableComponent>())
+                         .Query<RefRW<LocalTransform>, RefRO<Eatable>>()
+                         .WithAll<AutoScaleWithMass>()
+                         .WithChangeFilter<Eatable>())
             {
                 rwTransform.ValueRW.Scale = MassToRadius(roEatable.ValueRO.mass, gameplayConfig.massToScaleConversion) * 2f;
                 rwTransform.ValueRW.Position.z = gameplayConfig.baseZAxis - roEatable.ValueRO.mass * gameplayConfig.massToZAxisConversion;

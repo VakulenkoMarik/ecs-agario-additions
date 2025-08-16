@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Features.Consumption
 {
-    public struct EaterComponent : IComponentData
+    public struct EaterTag : IComponentData
     {
     }
     
@@ -16,7 +16,7 @@ namespace Features.Consumption
         public override void Bake(EaterAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.None);
-            AddComponent<EaterComponent>(entity);
+            AddComponent<EaterTag>(entity);
         }
     }
 }

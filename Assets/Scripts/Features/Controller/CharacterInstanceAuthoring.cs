@@ -8,6 +8,11 @@ namespace Features.Controller
         public Entity parent;
     }
     
+    public struct CharacterInstanceCleanup : ICleanupComponentData
+    {
+        public Entity parent;
+    }
+    
     public class CharacterInstanceAuthoring : MonoBehaviour
     {
         
@@ -18,7 +23,8 @@ namespace Features.Controller
         public override void Bake(CharacterInstanceAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.None);
-            AddComponent<CharacterInstance>(entity);
+            var parentEntity = GetEntity(authoring.GetComponentInParent<CharacterControllerAuthoring>(), TransformUsageFlags.None);
+            AddComponent(entity, new CharacterInstance{parent = parentEntity});
         }
     }
     

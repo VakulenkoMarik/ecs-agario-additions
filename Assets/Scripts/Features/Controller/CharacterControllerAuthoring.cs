@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Features.Input;
+﻿using Features.Input;
 using Unity.Entities;
 using UnityEngine;
 
@@ -18,7 +17,6 @@ namespace Features.Controller
     public class CharacterControllerAuthoring : MonoBehaviour
     {
         public ControlType type = ControlType.Player;
-        public List<CharacterInstanceAuthoring> children = new ();
     }
 
     public class CharacterControllerGroupBaker : Baker<CharacterControllerAuthoring>
@@ -38,11 +36,7 @@ namespace Features.Controller
                     break;
             }
 
-            var childBuffer = AddBuffer<ChildInstance>(entity);
-            foreach (var child in authoring.children)
-            {
-                childBuffer.Add(new ChildInstance {entity = GetEntity(child, TransformUsageFlags.None)});
-            }
+            AddBuffer<ChildInstance>(entity);
         }
     }
 }

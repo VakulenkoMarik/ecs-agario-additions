@@ -14,8 +14,8 @@ namespace Features.Consumption
     [BurstCompile]
     public partial struct EatingSystem : ISystem
     {
-        private ComponentLookup<EaterComponent> _eaterLookup;
-        private ComponentLookup<EatableComponent> _eatableLookup;
+        private ComponentLookup<EaterTag> _eaterLookup;
+        private ComponentLookup<Eatable> _eatableLookup;
         private ComponentLookup<LocalTransform> _transformLookup;
         
         public void OnCreate(ref SystemState state)
@@ -24,9 +24,9 @@ namespace Features.Consumption
             state.RequireForUpdate<SimulationSingleton>();
             state.RequireForUpdate<GameplayConfig>();
             
-            _eaterLookup = state.GetComponentLookup<EaterComponent>(true);
+            _eaterLookup = state.GetComponentLookup<EaterTag>(true);
             _transformLookup = state.GetComponentLookup<LocalTransform>(true);
-            _eatableLookup = state.GetComponentLookup<EatableComponent>(false);
+            _eatableLookup = state.GetComponentLookup<Eatable>(false);
         }
 
         [BurstCompile]
@@ -57,10 +57,10 @@ namespace Features.Consumption
     public struct EatingTriggerJob : ITriggerEventsJob
     {
         [ReadOnly] public GameplayConfig gameplayConfig;
-        [ReadOnly] public ComponentLookup<EaterComponent> eaterLookup;
+        [ReadOnly] public ComponentLookup<EaterTag> eaterLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> transformLookup;
         [NativeDisableParallelForRestriction]
-        public ComponentLookup<EatableComponent> eatableLookup;
+        public ComponentLookup<Eatable> eatableLookup;
         public EntityCommandBuffer ecb;
     
         [BurstCompile]

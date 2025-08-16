@@ -1,5 +1,6 @@
 ﻿using Data;
 using Features.Consumption;
+using Features.Movement;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -15,14 +16,14 @@ namespace Features.Feed
     {
         private Random _random;
         private ComponentLookup<LocalTransform> _transformLookup;
-        private ComponentLookup<EatableComponent> _eatableLookup;
+        private ComponentLookup<Eatable> _eatableLookup;
         private ComponentLookup<PhysicsVelocity> _physicsLookup;
 
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameplayConfig>();
             _transformLookup = state.GetComponentLookup<LocalTransform>(true);
-            _eatableLookup = state.GetComponentLookup<EatableComponent>(true);
+            _eatableLookup = state.GetComponentLookup<Eatable>(true);
             _physicsLookup = state.GetComponentLookup<PhysicsVelocity>();
         }
 
@@ -34,34 +35,35 @@ namespace Features.Feed
             _physicsLookup.Update(ref state);
             var gameplayConfig = SystemAPI.GetSingleton<GameplayConfig>();
             
-            foreach (var (rwFeed, rwEatable, roLocalTransform) in 
-                     SystemAPI.Query<RefRW<FeedComponent>, RefRW<EatableComponent>, RefRO<LocalTransform>>())
+            foreach (var (rwFeed, rwEatable, roLocalTransform, roDirection) in 
+                     SystemAPI.Query<RefRW<Feed>, RefRW<Eatable>, RefRO<LocalTransform>, RefRO<Direction>>())
             {
-                if (!rwFeed.ValueRO.tryToFeed || rwFeed.ValueRW.cooldownTimestamp > SystemAPI.Time.ElapsedTime)
+                if (math.all(roDirection.ValueRO.vector == float3.zero) || !rwFeed.ValueRO.tryToFeed || 
+                    rwFeed.ValueRW.cooldownTimestamp > SystemAPI.Time.ElapsedTime)
                 {
                     continue;
                 }
                 
                 var foodPrefab = rwFeed.ValueRO.foodPrefab;
-                if (!_eatableLookup.TryGetComponent(foodPrefab, out var roPrefabEatable) ||
-                    !_physicsLookup.TryGetComponent(foodPrefab, out var rwPhysicsVelocity) ||
-                    rwEatable.ValueRO.mass - gameplayConfig.minMass < roPrefabEatable.mass)
+                if (!_eatableLookup.TryGetComponent(foodPrefab, out var prefabEatable) ||
+                    !_physicsLookup.TryGetComponent(foodPrefab, out var physicsVelocity) ||
+                    rwEatable.ValueRO.mass - gameplayConfig.minMass < prefabEatable.mass)
                 {
                     continue;
                 }
                  
-                rwEatable.ValueRW.mass -= roPrefabEatable.mass;
+                rwEatable.ValueRW.mass -= prefabEatable.mass;
+                var normalizedDirection = math.normalize(roDirection.ValueRO.vector);
                 var newEntity = state.EntityManager.Instantiate(foodPrefab);
                 var newEntityLocalTransform = SystemAPI.GetComponent<LocalTransform>(newEntity);
                 float distanceBetweenCenters = MassScalerSystem.MassToRadius(rwEatable.ValueRO.mass, gameplayConfig.massToScaleConversion) 
-                               + MassScalerSystem.MassToRadius(roPrefabEatable.mass, gameplayConfig.massToScaleConversion);
-                float3 localPosition = math.normalize(new float3(1f, 1f, 0f)) * distanceBetweenCenters;
+                               + MassScalerSystem.MassToRadius(prefabEatable.mass, gameplayConfig.massToScaleConversion);
+                float3 localPosition = normalizedDirection * distanceBetweenCenters;
                 newEntityLocalTransform.Position = roLocalTransform.ValueRO.Position + localPosition;
                 SystemAPI.SetComponent(newEntity, newEntityLocalTransform);
-                rwPhysicsVelocity.Linear = math.normalize(new float3(1f, 1f, 0f)) * 2;
-                SystemAPI.SetComponent(newEntity, rwPhysicsVelocity);
+                physicsVelocity.Linear = normalizedDirection * 2;
+                SystemAPI.SetComponent(newEntity, physicsVelocity);
                 rwFeed.ValueRW.cooldownTimestamp = (float)SystemAPI.Time.ElapsedTime + rwFeed.ValueRO.cooldown;
-                break;
             }
         }
     }
