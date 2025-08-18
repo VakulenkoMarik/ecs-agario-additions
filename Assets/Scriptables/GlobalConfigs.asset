@@ -18,3 +18,4 @@ MonoBehaviour:
     baseZAxis: 0
     minMass: 5
     massToSpeedExpModifier: -0.01
+    selfEatingCooldown: 10

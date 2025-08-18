@@ -1,12 +1,13 @@
 ﻿using Features.Input;
 using Unity.Entities;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 namespace Features.Controller
 {
     public struct CharacterController : IComponentData
     {
-        public int uid;
+        public uint uid;
     }
     
     public struct ChildInstance : IBufferElementData
@@ -21,10 +22,12 @@ namespace Features.Controller
 
     public class CharacterControllerGroupBaker : Baker<CharacterControllerAuthoring>
     {
+        private static uint _uidCount = 0;
+        
         public override void Bake(CharacterControllerAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.None);
-            AddComponent<CharacterController>(entity);
+            AddComponent(entity, new CharacterController{uid = _uidCount++});
             AddComponent<GameCommands>(entity);
             switch (authoring.type)
             {

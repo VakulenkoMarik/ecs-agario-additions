@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 using UnityEngine;
 
 namespace ProjectTools.Ecs
@@ -12,7 +13,7 @@ namespace ProjectTools.Ecs
     public struct DynamicForcedCollision : IBufferElementData
     {
         public uint withLayer;
-        
+        public double cooldown;
     }
     
     public readonly partial struct DynamicCollisionAspect : IAspect
@@ -24,9 +25,16 @@ namespace ProjectTools.Ecs
 
     public class DynamicColliderAuthoring : MonoBehaviour
     {
+        [Serializable]
+        public class ForcedCollision
+        {
+            public uint withLayer;
+            public double cooldown = -1;
+        }
+        
         public uint ownLayer;
         
-        public uint[] allowedCollisions;
+        public ForcedCollision[] forcedCollisions;
     }
     
     public class DynamicColliderBaker : Baker<DynamicColliderAuthoring>
@@ -37,14 +45,18 @@ namespace ProjectTools.Ecs
             AddComponent(entity, new DynamicCollider { ownLayer = authoring.ownLayer });
             
             AddBuffer<DynamicForcedCollision>(entity);
-            if (authoring.allowedCollisions == null)
+            if (authoring.forcedCollisions == null)
             {
                 return;
             }
             
-            foreach (uint allowedCollision in authoring.allowedCollisions)
+            foreach (DynamicColliderAuthoring.ForcedCollision forcedCollision in authoring.forcedCollisions)
             {
-                AppendToBuffer(entity, new DynamicForcedCollision{ withLayer = allowedCollision });
+                AppendToBuffer(entity, new DynamicForcedCollision
+                {
+                    withLayer = forcedCollision.withLayer, 
+                    cooldown = forcedCollision.cooldown,
+                });
             }
         }
     }

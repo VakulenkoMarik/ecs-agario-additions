@@ -3,7 +3,9 @@ using Features.Consumption;
 using Features.Controller;
 using Features.Input;
 using Features.Movement;
+using ProjectTools.Ecs;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -14,6 +16,7 @@ namespace Features.Abilities.Types
     [BurstCompile]
     public sealed partial class SplitRequestSystem : BaseAbilityRequestSystem
     {
+        private ComponentLookup<CharacterController> _characterControllerLookup;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
@@ -48,10 +51,14 @@ namespace Features.Abilities.Types
         {
             RequireForUpdate<EndInitializationEntityCommandBufferSystem.Singleton>();
             RequireForUpdate<GameplayConfig>();
+            
+            _characterControllerLookup = GetComponentLookup<CharacterController>(true);
         }
         
         protected override void OnUpdate()
         {
+            _characterControllerLookup.Update(ref CheckedStateRef);
+            
             var ecbSingleton = World.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>();
             var ecb = ecbSingleton.CreateCommandBuffer().AsParallelWriter();
 
@@ -59,6 +66,7 @@ namespace Features.Abilities.Types
             {
                 ecb = ecb,
                 gameplayConfig = SystemAPI.GetSingleton<GameplayConfig>(),
+                characterControllerLookup = _characterControllerLookup,
             }.ScheduleParallel(Dependency);
             
             ecbSingleton.AddJobHandleForProducer(Dependency);
@@ -71,6 +79,8 @@ namespace Features.Abilities.Types
         {
             public EntityCommandBuffer.ParallelWriter ecb;
             public GameplayConfig gameplayConfig;
+            [ReadOnly]
+            public ComponentLookup<CharacterController> characterControllerLookup;
         
             [BurstCompile]
             public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref SplitRequest request, ref Eatable eatable, 
@@ -104,6 +114,14 @@ namespace Features.Abilities.Types
                 ecb.SetComponent(sortKey, newEntity, new PhysicsVelocity{Linear = normalizedDirection * 2});;
             
                 ecb.SetComponent(sortKey, newEntity, new CharacterInstance{parent = instance.parent});
+
+                uint uid = characterControllerLookup.GetRefRO(instance.parent).ValueRO.uid;
+                ecb.SetComponent(sortKey, newEntity, new DynamicCollider{ ownLayer = uid});
+                ecb.AppendToBuffer(sortKey, newEntity, new DynamicForcedCollision
+                {
+                    withLayer = uid, 
+                    cooldown = gameplayConfig.selfEatingCooldown,
+                });
             }
         }
     }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1273026981541354858}
   - component: {fileID: 3242606322670992450}
   - component: {fileID: 6271092084128319327}
+  - component: {fileID: 3818967952814698890}
   m_Layer: 0
   m_Name: Food
   m_TagString: Untagged
@@ -157,3 +158,17 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3818967952814698890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7661046383562058751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65b124d8250a4e5c8297010fcc0e8b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliderAuthoring
+  ownLayer: 0
+  forcedCollisions: []

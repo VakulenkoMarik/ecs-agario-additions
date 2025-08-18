@@ -14,5 +14,7 @@ namespace Data
         public float minMass;
         [Range(-0.5f, 0.5f)]
         public float massToSpeedExpModifier;
+        
+        public double selfEatingCooldown;
     }
 }
