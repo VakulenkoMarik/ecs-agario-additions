@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace Features.Input
 {
-    [UpdateInGroup(typeof(GameplayGroup), OrderFirst = true)]
+    [UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
     public partial class InputSystem : SystemBase, InputActions.IPlayerActions
     {
         private InputActions _inputActions;

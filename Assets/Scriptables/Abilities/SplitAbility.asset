@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48428250ea594f02a0bd0807e977d850, type: 3}
+  m_Name: SplitAbility
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Abilities.AbilitySO
+  type: 1
+  cooldown: 1
+  prefab: {fileID: 3564986274487595235, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}

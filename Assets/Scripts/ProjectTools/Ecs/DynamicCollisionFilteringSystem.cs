@@ -11,7 +11,7 @@ namespace ProjectTools.Ecs
     public partial struct DynamicCollisionFilteringSystem : ISystem
     {
         private ComponentLookup<DynamicCollider> _dynamicColliderLookup;
-        private BufferLookup<DynamicAllowedCollision> _dynamicCollisionLookup;
+        private BufferLookup<DynamicForcedCollision> _dynamicCollisionLookup;
         private ComponentLookup<PhysicsCollider> _physicsColliderLookup;
 
         public void OnCreate(ref SystemState state)
@@ -20,7 +20,7 @@ namespace ProjectTools.Ecs
             state.RequireForUpdate<PhysicsWorldSingleton>();
 
             _dynamicColliderLookup = state.GetComponentLookup<DynamicCollider>();
-            _dynamicCollisionLookup = state.GetBufferLookup<DynamicAllowedCollision>();
+            _dynamicCollisionLookup = state.GetBufferLookup<DynamicForcedCollision>();
             _physicsColliderLookup = state.GetComponentLookup<PhysicsCollider>();
         }
 
@@ -47,7 +47,7 @@ namespace ProjectTools.Ecs
     public struct CollisionOverrideJob : IContactsJob
     {
         [ReadOnly] public ComponentLookup<DynamicCollider> dynamicColliderLookup;
-        [ReadOnly] public BufferLookup<DynamicAllowedCollision> dynamicCollisionLookup;
+        [ReadOnly] public BufferLookup<DynamicForcedCollision> dynamicCollisionLookup;
         [ReadOnly] public ComponentLookup<PhysicsCollider> physicsColliderLookup;
 
         [BurstCompile]

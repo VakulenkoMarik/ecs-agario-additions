@@ -7,28 +7,30 @@ namespace Features.Controller
 {
     [UpdateInGroup(typeof(InitializationSystemGroup), OrderLast = true)]
     [BurstCompile]
-    public partial struct CharacterControllerHierarchyInitSystem : ISystem
+    public partial class CharacterControllerHierarchyInitSystem : SystemBase
     {
         private BufferLookup<ChildInstance> _childInstanceLookup;
 
-        public void OnCreate(ref SystemState state)
+        protected override void OnCreate()
         {
-            state.RequireForUpdate<EndInitializationEntityCommandBufferSystem.Singleton>();
-            _childInstanceLookup = state.GetBufferLookup<ChildInstance>();
+            RequireForUpdate<EndInitializationEntityCommandBufferSystem.Singleton>();
+            _childInstanceLookup = GetBufferLookup<ChildInstance>();
         }
         
         [BurstCompile]
-        public void OnUpdate(ref SystemState state)
+        protected override void OnUpdate()
         {
-            var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>()
-                .CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
-            _childInstanceLookup.Update(ref state);
+            var ecbSingleton = World.GetExistingSystemManaged<EndInitializationEntityCommandBufferSystem>();
+            var ecb = ecbSingleton.CreateCommandBuffer().AsParallelWriter(); 
+            _childInstanceLookup.Update(ref CheckedStateRef);
             
-            state.Dependency = new ParentValidationJob
+            Dependency = new ParentValidationJob
             {
                 ecb = ecb,
                 childInstanceLookup = _childInstanceLookup,
-            }.ScheduleParallel(state.Dependency);
+            }.ScheduleParallel(Dependency);
+            
+            ecbSingleton.AddJobHandleForProducer(Dependency);
         }
 
         [BurstCompile]
@@ -45,7 +47,6 @@ namespace Features.Controller
                 if (!childInstanceLookup.TryGetBuffer(instance.parent, out var children))
                 {
                     Debug.LogError($"Entity {entity} has no valid parent");
-                    ecb.RemoveComponent<CharacterInstance>(sortKey, entity);
                     ecb.DestroyEntity(sortKey, entity);
                     return;
                 }

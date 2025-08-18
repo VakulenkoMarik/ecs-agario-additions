@@ -16,9 +16,8 @@ GameObject:
   - component: {fileID: 5890947790360519152}
   - component: {fileID: 1776974014520861796}
   - component: {fileID: 4113698152337113442}
-  - component: {fileID: 682724012745191863}
-  - component: {fileID: 5520571859369154312}
   - component: {fileID: 3577676283520380124}
+  - component: {fileID: 1855989238109847909}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -201,34 +200,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &682724012745191863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3564986274487595235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16bae5afe6f54d059078ba772c13ff01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Features.Feed.FeedAuthoring
-  foodPrefab: {fileID: 7661046383562058751, guid: 3e47c8d32cf76df44a91238d0becae17, type: 3}
-  cooldown: 0.1
---- !u!114 &5520571859369154312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3564986274487595235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea7f3b9d74c45a6b062a052b5698622, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Features.Split.SplittableAuthoring
-  cooldown: 0.5
-  instancePrefab: {fileID: 3564986274487595235}
 --- !u!114 &3577676283520380124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,10 +207,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3564986274487595235}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65b124d8250a4e5c8297010fcc0e8b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliderAuthoring
   ownLayer: 0
-  allowedCollisions: 00000000
+  allowedCollisions: 
+--- !u!114 &1855989238109847909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3564986274487595235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b253c3a6dcdc4e92ab7ef9c0f45b47a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Abilities.Types.AbilitiesRequestsAuthoring
+  isFeedAllowed: 1
+  isSplitAllowed: 1

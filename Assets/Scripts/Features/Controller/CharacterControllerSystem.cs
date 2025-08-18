@@ -2,15 +2,13 @@
 using Unity.Entities;
 using Features.Input;
 using Features.Movement;
-using Features.Split;
 using Unity.Collections;
-using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Features.Controller
 {
-    [UpdateInGroup(typeof(GameplayGroup)), UpdateAfter(typeof(InputSystem))]
+    [UpdateInGroup(typeof(GameplayGroup))]
     [BurstCompile]
     public partial struct CharacterControllerSystem : ISystem
     {
@@ -31,16 +29,8 @@ namespace Features.Controller
             {
                 gameCommandsLookup = _gameCommandsLookup,
             }.ScheduleParallel(state.Dependency);
-            var feedJob = new CharacterControlFeedJob
-            {
-                gameCommandsLookup = _gameCommandsLookup,
-            }.ScheduleParallel(state.Dependency);
-            var splitJob = new CharacterControlSplitJob
-            {
-                gameCommandsLookup = _gameCommandsLookup,
-            }.ScheduleParallel(state.Dependency);
             
-            state.Dependency = JobHandle.CombineDependencies(directionJob, feedJob, splitJob);
+            state.Dependency = directionJob;
         }
     }
 
@@ -72,42 +62,6 @@ namespace Features.Controller
             {
                 direction.vector = float3.zero;
             }
-        }
-    }
-    
-    [BurstCompile]
-    public partial struct CharacterControlFeedJob : IJobEntity
-    {
-        [ReadOnly] 
-        public ComponentLookup<GameCommands> gameCommandsLookup;
-        
-        [BurstCompile]
-        public void Execute(in CharacterInstance instance, in LocalTransform localTransform, ref Feed.Feed feed)
-        {
-            if (!gameCommandsLookup.TryGetComponent(instance.parent, out var gameCommands))
-            {
-                return;
-            }
-            
-            feed.tryToFeed = gameCommands.IsFeedPressed;
-        }
-    }
-    
-    [BurstCompile]
-    public partial struct CharacterControlSplitJob : IJobEntity
-    {
-        [ReadOnly] 
-        public ComponentLookup<GameCommands> gameCommandsLookup;
-        
-        [BurstCompile]
-        public void Execute(in CharacterInstance instance, in LocalTransform localTransform, ref Splittable splittable)
-        {
-            if (!gameCommandsLookup.TryGetComponent(instance.parent, out var gameCommands))
-            {
-                return;
-            }
-            
-            splittable.tryToSplit = gameCommands.IsJumpPressed;
         }
     }
 }

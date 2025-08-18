@@ -9,16 +9,17 @@ namespace ProjectTools.Ecs
     }
     
     [InternalBufferCapacity(5)]
-    public struct DynamicAllowedCollision : IBufferElementData
+    public struct DynamicForcedCollision : IBufferElementData
     {
         public uint withLayer;
+        
     }
     
     public readonly partial struct DynamicCollisionAspect : IAspect
     {
         public readonly RefRW<DynamicCollider> dynamicLayer;
         
-        public readonly DynamicBuffer<DynamicAllowedCollision> allowedCollisions;
+        public readonly DynamicBuffer<DynamicForcedCollision> allowedCollisions;
     }
 
     public class DynamicColliderAuthoring : MonoBehaviour
@@ -35,7 +36,7 @@ namespace ProjectTools.Ecs
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new DynamicCollider { ownLayer = authoring.ownLayer });
             
-            AddBuffer<DynamicAllowedCollision>(entity);
+            AddBuffer<DynamicForcedCollision>(entity);
             if (authoring.allowedCollisions == null)
             {
                 return;
@@ -43,7 +44,7 @@ namespace ProjectTools.Ecs
             
             foreach (uint allowedCollision in authoring.allowedCollisions)
             {
-                AppendToBuffer(entity, new DynamicAllowedCollision{ withLayer = allowedCollision });
+                AppendToBuffer(entity, new DynamicForcedCollision{ withLayer = allowedCollision });
             }
         }
     }

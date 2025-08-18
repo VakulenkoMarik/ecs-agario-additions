@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -6,6 +7,7 @@ namespace Features.Input
 {
     public struct InputBridge : IComponentData
     {
+        [MarshalAs(UnmanagedType.U1)]
         public bool isFocussed;
     }
 
@@ -13,6 +15,7 @@ namespace Features.Input
     {
         private const float PressedThreshold = 0.2f;
         
+        [MarshalAs(UnmanagedType.U1)]
         public bool isTargetValid;
         public float2 targetValue;
         public float2 moveValue;
