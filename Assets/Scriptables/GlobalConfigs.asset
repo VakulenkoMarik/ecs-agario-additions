@@ -19,3 +19,9 @@ MonoBehaviour:
     minMass: 5
     massToSpeedExpModifier: -0.01
     selfEatingCooldown: 10
+  aiBehaviourConfig:
+    viewRadius: 2
+    enemyDirectionWeight: 2
+    enemyProximityExpModifier: -0.3
+    foodDirectionWeight: 1
+    foodProximityExpModifier: -0.4

@@ -24,6 +24,7 @@ namespace Features.Controller
             var ecb = ecbSingleton.CreateCommandBuffer().AsParallelWriter(); 
             _childInstanceLookup.Update(ref CheckedStateRef);
             
+            Dependency = new ParentUidJob().Schedule(Dependency);
             Dependency = new ParentValidationJob
             {
                 ecb = ecb,
@@ -31,6 +32,22 @@ namespace Features.Controller
             }.ScheduleParallel(Dependency);
             
             ecbSingleton.AddJobHandleForProducer(Dependency);
+        }
+        
+        [BurstCompile]
+        [WithChangeFilter(typeof(CharacterController))]
+        public partial struct ParentUidJob : IJobEntity
+        {
+            public static uint uidCounter = 0;
+            
+            [BurstCompile]
+            public void Execute(ref CharacterController controller)
+            {
+                if (controller.uid == uint.MaxValue)
+                {
+                    controller.uid = uidCounter++;
+                }
+            }
         }
 
         [BurstCompile]

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e760a1a6d247f8b798daa7df367764, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Features.Controller.CharacterControllerAuthoring
-  type: 0
+  type: 1
 --- !u!114 &5383330650735148695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,10 +74,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character
       objectReference: {fileID: 0}
-    - target: {fileID: 5520571859369154312, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
-      propertyPath: instancePrefab
-      value: 
-      objectReference: {fileID: 3564986274487595235, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
     - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -417.8203

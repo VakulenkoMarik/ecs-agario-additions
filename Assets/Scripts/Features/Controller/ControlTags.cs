@@ -13,8 +13,8 @@ namespace Features.Controller
         
     }
     
-    public struct SimpleAIControlTag : IComponentData
+    public struct SimpleAIControl : IComponentData
     {
-        
+        public float randomCooldown;
     }
 }
