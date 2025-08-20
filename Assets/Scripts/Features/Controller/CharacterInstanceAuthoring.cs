@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 using UnityEngine;
 
 namespace Features.Controller
@@ -15,7 +16,7 @@ namespace Features.Controller
     
     public class CharacterInstanceAuthoring : MonoBehaviour
     {
-        
+        public CharacterControllerAuthoring parent;
     }
 
     public class CharacterInstanceBaker : Baker<CharacterInstanceAuthoring>
@@ -23,7 +24,7 @@ namespace Features.Controller
         public override void Bake(CharacterInstanceAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.None);
-            var parentEntity = GetEntity(authoring.GetComponentInParent<CharacterControllerAuthoring>(), TransformUsageFlags.None);
+            var parentEntity = GetEntity(authoring.parent, TransformUsageFlags.None);
             AddComponent(entity, new CharacterInstance{parent = parentEntity});
         }
     }

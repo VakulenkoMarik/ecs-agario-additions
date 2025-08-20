@@ -49,6 +49,8 @@ namespace Features.Controller
             var boxHalfExtents = new float3(aiBehaviourConfig.viewRadius);
             
             state.EntityManager.CompleteDependencyBeforeRO<LocalToWorld>();
+            state.EntityManager.CompleteDependencyBeforeRO<ChildInstance>();
+
             _localToWorldLookup.Update(ref state);
             _eatableLookup.Update(ref state);
             _characterControllerControllerLookup.Update(ref state);

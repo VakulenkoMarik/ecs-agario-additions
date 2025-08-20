@@ -4,7 +4,8 @@ using Unity.Entities;
 
 namespace Features.Controller
 {
-    [UpdateInGroup(typeof(CleanupGroup))]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateAfter(typeof(FixedStepSimulationSystemGroup))]
     [BurstCompile]
     public partial struct CharacterControllerHierarchyCleanupSystem : ISystem
     {
@@ -19,8 +20,11 @@ namespace Features.Controller
         public void OnUpdate(ref SystemState state)
         {
             var ecb = new EntityCommandBuffer(Allocator.Temp);
+            
+            state.EntityManager.CompleteDependencyBeforeRW<ChildInstance>();
             _childInstanceLookup.Update(ref state);
-
+            
+            
             foreach (var (roInstance, entity) in SystemAPI.Query<RefRO<CharacterInstanceCleanup>>().WithNone<CharacterInstance>().WithEntityAccess())
             {
                 if (_childInstanceLookup.TryGetBuffer(roInstance.ValueRO.parent, out var children))
@@ -34,6 +38,12 @@ namespace Features.Controller
 
                         children.RemoveAtSwapBack(i);
                         break;
+                    }
+
+                    if (children.Length == 0)
+                    {
+                        ecb.DestroyEntity(roInstance.ValueRO.parent);
+                        continue;
                     }
                 }
 

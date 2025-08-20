@@ -12,34 +12,33 @@ namespace Features.Consumption
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     [UpdateAfter(typeof(PhysicsSystemGroup))]
     [BurstCompile]
-    public partial struct EatingSystem : ISystem
+    public partial class EatingSystem : SystemBase
     {
         private ComponentLookup<EaterTag> _eaterLookup;
         private ComponentLookup<Eatable> _eatableLookup;
         private ComponentLookup<LocalTransform> _transformLookup;
         
-        public void OnCreate(ref SystemState state)
+        protected override void OnCreate()
         {
-            state.RequireForUpdate<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>();
-            state.RequireForUpdate<SimulationSingleton>();
-            state.RequireForUpdate<GameplayConfig>();
+            RequireForUpdate<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>();
+            RequireForUpdate<SimulationSingleton>();
+            RequireForUpdate<GameplayConfig>();
             
-            _eaterLookup = state.GetComponentLookup<EaterTag>(true);
-            _transformLookup = state.GetComponentLookup<LocalTransform>(true);
-            _eatableLookup = state.GetComponentLookup<Eatable>(false);
+            _eaterLookup = GetComponentLookup<EaterTag>(true);
+            _transformLookup = GetComponentLookup<LocalTransform>(true);
+            _eatableLookup = GetComponentLookup<Eatable>(false);
         }
-
-        [BurstCompile]
-        public void OnUpdate(ref SystemState state)
+        
+        protected override void OnUpdate()
         {
-            var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>()
-                .CreateCommandBuffer(state.WorldUnmanaged);
+            var ecbSingleton = World.GetExistingSystemManaged<EndFixedStepSimulationEntityCommandBufferSystem>();
+            var ecb = ecbSingleton.CreateCommandBuffer();
             
-            _eaterLookup.Update(ref state);
-            _transformLookup.Update(ref state);
-            _eatableLookup.Update(ref state);
+            _eaterLookup.Update(ref CheckedStateRef);
+            _transformLookup.Update(ref CheckedStateRef);
+            _eatableLookup.Update(ref CheckedStateRef);
 
-            state.Dependency = new EatingTriggerJob
+            Dependency = new EatingTriggerJob
             {
                 gameplayConfig = SystemAPI.GetSingleton<GameplayConfig>(),
                 eaterLookup = _eaterLookup,
@@ -48,8 +47,10 @@ namespace Features.Consumption
                 ecb = ecb,
             }.Schedule(
                 SystemAPI.GetSingleton<SimulationSingleton>(),
-                state.Dependency
+                Dependency
             );
+            
+            ecbSingleton.AddJobHandleForProducer(Dependency);
         }
     }
     

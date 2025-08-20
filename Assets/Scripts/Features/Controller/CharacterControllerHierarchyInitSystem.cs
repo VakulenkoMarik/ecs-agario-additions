@@ -9,6 +9,7 @@ namespace Features.Controller
     [BurstCompile]
     public partial class CharacterControllerHierarchyInitSystem : SystemBase
     {
+        public static uint uidCounter = 0;
         private BufferLookup<ChildInstance> _childInstanceLookup;
 
         protected override void OnCreate()
@@ -17,37 +18,32 @@ namespace Features.Controller
             _childInstanceLookup = GetBufferLookup<ChildInstance>();
         }
         
-        [BurstCompile]
         protected override void OnUpdate()
         {
             var ecbSingleton = World.GetExistingSystemManaged<EndInitializationEntityCommandBufferSystem>();
             var ecb = ecbSingleton.CreateCommandBuffer().AsParallelWriter(); 
+
+            EntityManager.CompleteDependencyBeforeRW<ChildInstance>();
             _childInstanceLookup.Update(ref CheckedStateRef);
             
-            Dependency = new ParentUidJob().Schedule(Dependency);
+            Dependency = Entities
+                .WithoutBurst()
+                .WithChangeFilter<CharacterController>()
+                .ForEach((ref CharacterController controller) =>
+                {
+                    if (controller.uid == uint.MaxValue)
+                    {
+                        controller.uid = uidCounter++;
+                    }
+                })
+                .Schedule(Dependency);
+            
             Dependency = new ParentValidationJob
             {
                 ecb = ecb,
                 childInstanceLookup = _childInstanceLookup,
             }.ScheduleParallel(Dependency);
-            
             ecbSingleton.AddJobHandleForProducer(Dependency);
-        }
-        
-        [BurstCompile]
-        [WithChangeFilter(typeof(CharacterController))]
-        public partial struct ParentUidJob : IJobEntity
-        {
-            public static uint uidCounter = 0;
-            
-            [BurstCompile]
-            public void Execute(ref CharacterController controller)
-            {
-                if (controller.uid == uint.MaxValue)
-                {
-                    controller.uid = uidCounter++;
-                }
-            }
         }
 
         [BurstCompile]

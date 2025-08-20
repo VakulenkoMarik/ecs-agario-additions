@@ -8,7 +8,7 @@ using Random = Unity.Mathematics.Random;
 
 namespace Features.Spawn
 {
-    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateInGroup(typeof(InitializationSystemGroup), OrderFirst = true)]
     [BurstCompile]
     public partial struct SpawnerSystem : ISystem
     {
