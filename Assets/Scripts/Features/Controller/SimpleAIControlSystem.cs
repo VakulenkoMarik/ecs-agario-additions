@@ -66,8 +66,11 @@ namespace Features.Controller
                 float averageMass = 0f;  
                 for (int i = 0; i < childBuffer.Length; ++i)
                 {
-                    center += _localToWorldLookup.GetRefRO(childBuffer[i].entity).ValueRO.Position;
-                    averageMass += _eatableLookup.GetRefRO(childBuffer[i].entity).ValueRO.mass;
+                    if (_localToWorldLookup.HasComponent(childBuffer[i].entity))
+                    {
+                        center += _localToWorldLookup.GetRefRO(childBuffer[i].entity).ValueRO.Position;
+                        averageMass += _eatableLookup.GetRefRO(childBuffer[i].entity).ValueRO.mass;
+                    }
                 }
                 
                 center /= childBuffer.Length;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Features.Controller
 {
-    [UpdateInGroup(typeof(InitializationSystemGroup), OrderLast = true)]
+    [UpdateInGroup(typeof(InitializationSystemGroup)), UpdateBefore(typeof(EndInitializationEntityCommandBufferSystem))]
     [BurstCompile]
     public partial class CharacterControllerHierarchyInitSystem : SystemBase
     {
