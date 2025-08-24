@@ -37,8 +37,6 @@ namespace Features.Input
         {
             var entity = SystemAPI.GetSingletonEntity<InputBridge>();
             RefreshInputActions(in entity, _inputActions.Player, ref _trackedPlayerInput);
-
-            
             
             if (_trackedPlayerInput.PopIsChanged)
             {

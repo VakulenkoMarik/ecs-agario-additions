@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2642087134609955010}
   - component: {fileID: 5383330650735148695}
   m_Layer: 0
-  m_Name: CharacterController
+  m_Name: AICharacterController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -117,6 +117,18 @@ PrefabInstance:
     - target: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8931356385021789242, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8931356385021789242, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
+      propertyPath: m_Color.g
+      value: 0.0018941243
+      objectReference: {fileID: 0}
+    - target: {fileID: 8931356385021789242, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
