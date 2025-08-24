@@ -36,7 +36,7 @@ namespace Features.Abilities.Types
 
             foreach (var instance in children)
             {
-                ecb.SetComponent(sortKey, instance.entity, new SplitRequest {prefab = ability.prefab});
+                ecb.SetComponent(sortKey, instance.entity, new SplitRequest {prefab = instance.entity});
                 ecb.SetComponentEnabled<SplitRequest>(sortKey, instance.entity, true);
             }
 
