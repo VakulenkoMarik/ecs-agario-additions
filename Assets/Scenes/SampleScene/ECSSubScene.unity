@@ -637,7 +637,7 @@ MonoBehaviour:
     y: 4
     z: 0
   spawnRate: 1
-  maxCount: 20
+  maxCount: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

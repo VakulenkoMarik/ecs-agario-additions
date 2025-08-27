@@ -28,6 +28,9 @@ namespace Features.CameraControl
                      SystemAPI.Query<EnabledRefRW<CameraFollowTarget>>()
                          .WithEntityAccess())
             {
+                if (entity == _currentTarget)
+                    continue;
+                
                 if (target.ValueRO)
                 {
                     if (_currentTarget != Entity.Null && 
