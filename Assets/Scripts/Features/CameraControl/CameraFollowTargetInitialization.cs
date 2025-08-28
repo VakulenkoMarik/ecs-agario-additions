@@ -1,6 +1,7 @@
 using Features.Controller;
 using Unity.Burst;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Features.CameraControl
 {
@@ -9,19 +10,19 @@ namespace Features.CameraControl
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            foreach (var (characterInstance, targetCharacterEntity) 
-                     in SystemAPI.Query< 
-                         RefRO<CharacterInstance>>()
+            foreach (var (cameraFollowTarget, targetCharacterEntity) 
+                     in SystemAPI.Query<
+                         RefRW<CameraFollowTarget>>()
                          .WithPresent<CameraFollowTarget>()
+                         .WithAll<CharacterInstance>()
                          .WithEntityAccess())
             {
                 
-                if (SystemAPI.HasComponent<PlayerControlTag>(characterInstance.ValueRO.parent))
+                if (cameraFollowTarget.ValueRO is { activateOnStart: true, beenActivatedObStart: false})
                 {
+                    cameraFollowTarget.ValueRW.beenActivatedObStart = true;
                     SystemAPI.SetComponentEnabled<CameraFollowTarget>(targetCharacterEntity, true);
-                    state.Enabled = false;
                 }
-                
             }
         }
     }

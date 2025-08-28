@@ -70,6 +70,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7900317238260643659}
     m_Modifications:
+    - target: {fileID: 1883198461637598637, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
+      propertyPath: activateOnStart
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3564986274487595235, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
       propertyPath: m_Name
       value: Character
