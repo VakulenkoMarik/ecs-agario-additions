@@ -10,13 +10,13 @@ namespace Features.CameraControl
         public bool beenActivatedOnStart;
     }
     
-    public class CameraFollowTargetAuthoring : MonoBehaviour
+    public class CameraTargetAuthoring : MonoBehaviour
     {
         [SerializeField] private bool activateOnStart;
         
-        public class Baker : Baker<CameraFollowTargetAuthoring>
+        public class Baker : Baker<CameraTargetAuthoring>
         {
-            public override void Bake(CameraFollowTargetAuthoring authoring)
+            public override void Bake(CameraTargetAuthoring authoring)
             {
                 var entity = GetEntity(authoring, TransformUsageFlags.Dynamic);
                 
