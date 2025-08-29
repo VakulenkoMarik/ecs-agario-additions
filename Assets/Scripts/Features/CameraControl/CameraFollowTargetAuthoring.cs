@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -5,8 +6,8 @@ namespace Features.CameraControl
 {
     public struct CameraFollowTarget : IEnableableComponent, IComponentData
     {
-        public bool activateOnStart;
-        public bool beenActivatedObStart;
+        [ReadOnly] public bool activateOnStart;
+        public bool beenActivatedOnStart;
     }
     
     public class CameraFollowTargetAuthoring : MonoBehaviour

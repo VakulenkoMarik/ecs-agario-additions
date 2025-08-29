@@ -18,9 +18,9 @@ namespace Features.CameraControl
                          .WithEntityAccess())
             {
                 
-                if (cameraFollowTarget.ValueRO is { activateOnStart: true, beenActivatedObStart: false})
+                if (cameraFollowTarget.ValueRO is { activateOnStart: true, beenActivatedOnStart: false})
                 {
-                    cameraFollowTarget.ValueRW.beenActivatedObStart = true;
+                    cameraFollowTarget.ValueRW.beenActivatedOnStart = true;
                     SystemAPI.SetComponentEnabled<CameraFollowTarget>(targetCharacterEntity, true);
                 }
             }
