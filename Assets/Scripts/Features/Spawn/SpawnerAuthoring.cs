@@ -12,6 +12,8 @@ namespace Features.Spawn
         public float nextSpawnTime;
         public float spawnRate;
         public float maxCount;
+        public bool cycleSpawn;
+        public int entitiesSpawned;
     }
 
     public class SpawnerAuthoring : MonoBehaviour
@@ -21,6 +23,7 @@ namespace Features.Spawn
         public float3 spawnZone;
         public float spawnRate;
         public float maxCount = 100;
+        public bool isCycleSpawn = true;
     }
 
     public class SpawnerBaker : Baker<SpawnerAuthoring>
@@ -37,6 +40,7 @@ namespace Features.Spawn
                 nextSpawnTime = 0.0f,
                 spawnRate = authoring.spawnRate,
                 maxCount = authoring.maxCount,
+                cycleSpawn = authoring.isCycleSpawn,
             });
         }
     }

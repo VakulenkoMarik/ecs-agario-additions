@@ -57,8 +57,13 @@ namespace Features.Spawn
             
             foreach (var (rwSpawner, roLocalToWorld, entity) in SystemAPI.Query<RefRW<Spawner>, RefRO<LocalToWorld>>().WithEntityAccess())
             {
+                if (!rwSpawner.ValueRO.cycleSpawn && rwSpawner.ValueRO.entitiesSpawned >= rwSpawner.ValueRO.maxCount)
+                {
+                    continue;
+                }
+                    
                 if (rwSpawner.ValueRO.nextSpawnTime > SystemAPI.Time.ElapsedTime ||
-                    (_childBufferLookup.TryGetBuffer(entity, out var childBuffer) && childBuffer.Length >= rwSpawner.ValueRO.maxCount))
+                        (_childBufferLookup.TryGetBuffer(entity, out var childBuffer) && childBuffer.Length >= rwSpawner.ValueRO.maxCount))
                 {
                     continue;
                 }
@@ -86,6 +91,7 @@ namespace Features.Spawn
                     var localTransform = SystemAPI.GetComponent<LocalTransform>(newEntity);
                     localTransform.Position = spawnerPosition;
                     SystemAPI.SetComponent(newEntity, localTransform);
+                    rwSpawner.ValueRW.entitiesSpawned++;
                     rwSpawner.ValueRW.nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + rwSpawner.ValueRO.spawnRate;
                     break;
                 }
