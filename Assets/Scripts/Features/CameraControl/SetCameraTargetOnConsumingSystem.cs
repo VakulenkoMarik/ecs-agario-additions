@@ -5,7 +5,7 @@ using Unity.Entities;
 namespace Features.CameraControl
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
-    public partial struct SetCameraTargetOnSelfConsumingSystem : ISystem
+    public partial struct SetCameraTargetOnConsumingSystem : ISystem
     {
         private ComponentLookup<CameraFollowTarget> _cameraTargets;
         private ComponentLookup<CharacterInstance> _characterInstances;
@@ -33,12 +33,25 @@ namespace Features.CameraControl
                 if (_cameraTargets.HasComponent(e.victim) && _cameraTargets.IsComponentEnabled(e.victim))
                 {
                     if (_characterInstances.TryGetComponent(e.victim, out var victimInstance) &&
-                        _characterInstances.TryGetComponent(e.eater, out var eaterInstance) &&
-                        victimInstance.parent == eaterInstance.parent)
+                        _characterInstances.TryGetComponent(e.eater, out var eaterInstance))
                     {
-                        if (_cameraTargets.HasComponent(e.eater))
+                        if (victimInstance.parent == eaterInstance.parent)
                         {
-                            SystemAPI.SetComponentEnabled<CameraFollowTarget>(e.eater, true);
+                            if (_cameraTargets.HasComponent(e.eater))
+                            {
+                                SystemAPI.SetComponentEnabled<CameraFollowTarget>(e.eater, true);
+                            }
+                            
+                            continue;
+                        }
+
+                        foreach (var (characterInstance, entity) in SystemAPI.Query<RefRO<CharacterInstance>>().WithEntityAccess())
+                        {
+                            if (characterInstance.ValueRO.parent == victimInstance.parent && _cameraTargets.HasComponent(entity))
+                            {
+                                SystemAPI.SetComponentEnabled<CameraFollowTarget>(entity, true);
+                                break;
+                            }
                         }
                     }
                 }

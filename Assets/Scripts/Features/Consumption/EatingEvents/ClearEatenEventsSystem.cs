@@ -15,9 +15,10 @@ namespace Features.Consumption.EatingEvents
             var bufferEntity = SystemAPI.GetSingletonEntity<EatenEventTag>();
             var buffer = SystemAPI.GetBuffer<EatenEvent>(bufferEntity);
 
-            if (buffer.IsEmpty)
+            if (buffer.IsEmpty) {
                 return;
-            
+            }
+
             var ecbSingleton = state.World.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>();
             var ecb = ecbSingleton.CreateCommandBuffer();
             
