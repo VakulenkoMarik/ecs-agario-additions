@@ -420,7 +420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boot
   globalConfigs: {fileID: 11400000, guid: f037c270532c63d48b42d131d2150d2b, type: 2}
-  initStateType: 1
+  initStateType: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
